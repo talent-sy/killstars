@@ -27,8 +27,9 @@
 
   function renderBoard() {
     boardEl.innerHTML = "";
-    boardEl.style.gridTemplateColumns = `repeat(${COLS}, 36px)`;
-    boardEl.style.gridTemplateRows = `repeat(${ROWS}, 36px)`;
+    boardEl.style.setProperty("--cols", COLS);
+    boardEl.style.setProperty("--rows", ROWS);
+    boardEl.style.setProperty("--cell-size", "36px");
 
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {

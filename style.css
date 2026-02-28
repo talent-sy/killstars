@@ -4,20 +4,36 @@
   box-sizing: border-box;
 }
 
+:root {
+  --cell-size: 36px;
+  --board-gap: 4px;
+  --header-padding: 24px;
+}
+
 body {
   min-height: 100vh;
+  min-height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding-left: max(12px, env(safe-area-inset-left));
+  padding-right: max(12px, env(safe-area-inset-right));
   background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
   font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
   color: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-overflow-scrolling: touch;
 }
 
 .game-container {
+  width: 100%;
+  max-width: 420px;
   background: rgba(255, 255, 255, 0.06);
   border-radius: 20px;
-  padding: 24px;
+  padding: clamp(12px, 4vw, 24px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -26,12 +42,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  gap: 16px;
+  margin-bottom: clamp(12px, 3vw, 20px);
+  gap: clamp(8px, 2vw, 16px);
+  flex-wrap: wrap;
 }
 
 .game-header h1 {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 5vw, 1.75rem);
   font-weight: 700;
   background: linear-gradient(90deg, #ffd700, #ffaa00);
   -webkit-background-clip: text;
@@ -42,7 +59,7 @@ body {
 .score-board,
 .combo-board {
   background: rgba(255, 255, 255, 0.1);
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
@@ -51,37 +68,47 @@ body {
 
 .score-board .label,
 .combo-board .label {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   opacity: 0.8;
 }
 
 #score,
 #combo {
-  font-size: 1.5rem;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
   font-weight: 700;
   color: #ffd700;
 }
 
 #game-board {
   display: grid;
-  gap: 4px;
-  padding: 8px;
+  gap: var(--board-gap);
+  padding: clamp(4px, 2vw, 8px);
   background: rgba(0, 0, 0, 0.25);
   border-radius: 12px;
   margin-bottom: 16px;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  grid-template-columns: repeat(var(--cols, 10), var(--cell-size));
+  grid-template-rows: repeat(var(--rows, 10), var(--cell-size));
 }
 
 .cell {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  min-width: 0;
+  min-height: 0;
+  border-radius: clamp(4px, 1.5vw, 8px);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: clamp(0.9rem, 2.8vw, 1.25rem);
   user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
 .cell-empty {
@@ -160,13 +187,16 @@ body {
 
 .overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  top: env(safe-area-inset-top, 0);
+  left: env(safe-area-inset-left, 0);
+  right: env(safe-area-inset-right, 0);
+  bottom: env(safe-area-inset-bottom, 0);
+  background: rgba(0, 0, 0, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 100;
-  border-radius: 20px;
+  padding: 16px;
 }
 
 .overlay.hidden {
@@ -194,4 +224,70 @@ body {
 #final-score {
   font-weight: 700;
   color: #4ecdc4;
+}
+
+/* 移动端适配：小屏时棋盘和格子按视口缩放 */
+@media (max-width: 480px), (max-height: 600px) {
+  :root {
+    --board-gap: 2px;
+  }
+
+  .game-container {
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  #game-board {
+    width: 100%;
+    max-width: min(calc(100vw - 32px), calc(100vh - 220px), 360px);
+    aspect-ratio: 1;
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(var(--cols, 10), 1fr);
+    grid-template-rows: repeat(var(--rows, 10), 1fr);
+  }
+
+  .cell {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 6px;
+    font-size: min(3.5vw, 1.1rem);
+  }
+
+  .game-footer .tip {
+    font-size: 0.75rem;
+  }
+
+  #restart-btn,
+  #play-again-btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+
+  .overlay-content {
+    margin: 16px;
+    padding: 24px;
+    max-width: calc(100vw - 32px);
+  }
+}
+
+/* 横屏或超小高度时进一步压缩头部 */
+@media (max-height: 500px) {
+  .game-header {
+    margin-bottom: 8px;
+  }
+
+  .game-header h1 {
+    font-size: 1rem;
+  }
+
+  #game-board {
+    max-width: min(calc(100vw - 24px), calc(100vh - 160px));
+  }
+
+  .game-footer .tip {
+    display: none;
+  }
 }
