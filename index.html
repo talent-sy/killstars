@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消灭星星</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="game-container">
+    <header class="game-header">
+      <h1>消灭星星</h1>
+      <div class="score-board">
+        <span class="label">得分</span>
+        <span id="score">0</span>
+      </div>
+      <div class="combo-board">
+        <span class="label">连击</span>
+        <span id="combo">0</span>
+      </div>
+    </header>
+    <div id="game-board"></div>
+    <div class="game-footer">
+      <p class="tip">点击 2 个或以上相连的同色星星即可消除</p>
+      <button id="restart-btn">重新开始</button>
+    </div>
+    <div id="game-over" class="overlay hidden">
+      <div class="overlay-content">
+        <h2>游戏结束</h2>
+        <p>最终得分：<span id="final-score">0</span></p>
+        <button id="play-again-btn">再玩一局</button>
+      </div>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
